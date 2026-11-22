@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#02070c">
+  <title>З.И.М.А. — СТУДКОМ ОмГУ</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<!-- Закреплённый фон со снегопадом -->
+<canvas id="snowCanvas" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+
+<!-- Первый экран 1-в-1: логотип на весь экран + название снизу -->
+<section class="hero">
+  <canvas id="logoCanvas" aria-label="Зимний ASCII-логотип мероприятия З.И.М.А."></canvas>
+  <header class="hero-header">
+    <div class="eyebrow">СТУДКОМ ОмГУ</div>
+    <h1>З.И.М.А.</h1>
+  </header>
+</section>
+
+<!-- Блоки ниже при прокрутке: ASCII-таймер и информация -->
+<main class="page">
+  <section class="countdown" aria-label="Обратный отсчёт до мероприятия">
+    <div class="time-card">
+      <div class="digits-pair" id="cd-days"></div>
+      <span class="time-label">дней</span>
+    </div>
+    <div class="time-card">
+      <div class="digits-pair" id="cd-hours"></div>
+      <span class="time-label">часов</span>
+    </div>
+    <div class="time-card">
+      <div class="digits-pair" id="cd-minutes"></div>
+      <span class="time-label">минут</span>
+    </div>
+    <div class="time-card">
+      <div class="digits-pair" id="cd-seconds"></div>
+      <span class="time-label">секунд</span>
+    </div>
+  </section>
+
+  <section class="info-grid" aria-label="Подробности мероприятия">
+    <!-- Организаторы -->
+    <article class="card card-organizers">
+      <h2 class="card-title">ОРГАНИЗАТОРЫ</h2>
+      <ul class="org-list">
+        <li class="org-item">
+          <div class="org-avatar">АМ</div>
+          <div class="org-meta">
+            <div class="org-name">Артём Малёнов</div>
+            <div class="org-role">Главный организатор, вечерняя программа</div>
+            <a class="org-link" href="https://t.me/mxlnxv" target="_blank" rel="noopener">@mxlnxv</a>
+          </div>
+        </li>
+        <li class="org-item">
+          <div class="org-avatar">ДХ</div>
+          <div class="org-meta">
+            <div class="org-name">Данил Хмелёв</div>
+            <div class="org-role">Главный организатор, программа и спикеры</div>
+            <a class="org-link" href="https://t.me/DSWordek" target="_blank" rel="noopener">@DSWordek</a>
+          </div>
+        </li>
+      </ul>
+      <div class="org-note">
+        <div class="org-note-label">// КОМАНДА СТУДКОМА</div>
+        <p>
+          За кадром стоит целая команда креативных ребят из Студкома: они пилят ночные квесты,
+          тестируют шалости, верстают этот сайт и следят за тем, чтобы после лекций никто
+          не ушёл спать слишком рано.
+        </p>
+      </div>
+    </article>
+
+    <!-- О мероприятии -->
+    <article class="card card-about">
+      <h2 class="card-title">❄ О МЕРОПРИЯТИИ ❄</h2>
+      <p class="card-text">
+        З.И.М.А. — это Зимняя Информационно-технологическая Математическая Академия:
+        четырёхдневный выезд на базу отдыха, где насыщенный IT-лекторий сочетается
+        с закрытой вечерней программой.
+      </p>
+      <p class="card-text">
+        Основа дня — три образовательных блока в формате лекций, воркшопов и практических
+        мастер-классов. Приглашённые преподаватели, успешные выпускники и амбассадоры
+        IT-компаний делятся реальным опытом из индустрии, разбирают прикладные кейсы из
+        разработки и науки и общаются с участниками в неформальной обстановке без
+        дистанции «кафедра — зал».
+      </p>
+      <p class="card-text">
+        После учёбы начинается секретный вечерний движ — подробности программы пока держим
+        в тайне. Заявиться можно с 1–2 друзьями, а на месте мы объединим пары и тройки
+        в большие команды для новых знакомств.
+      </p>
+    </article>
+
+    <!-- Расписание дня -->
+    <article class="card card-schedule">
+      <h2 class="card-title">РАСПИСАНИЕ ДНЯ</h2>
+      <ul class="schedule-list">
+        <li class="schedule-item">
+          <div class="schedule-head">
+            <span class="schedule-time">09:30</span>
+            <span class="schedule-name">Подъём и завтрак</span>
+          </div>
+          <div class="schedule-desc">Просыпаемся, завтракаем и заряжаемся на день</div>
+        </li>
+        <li class="schedule-item">
+          <div class="schedule-head">
+            <span class="schedule-time">11:00</span>
+            <span class="schedule-name">Утренний лекторий</span>
+          </div>
+          <div class="schedule-desc">Два выступления спикеров: лекции и воркшопы из мира IT и науки</div>
+        </li>
+        <li class="schedule-item">
+          <div class="schedule-head">
+            <span class="schedule-time">14:00</span>
+            <span class="schedule-name">Обед и перезагрузка</span>
+          </div>
+          <div class="schedule-desc">Горячий обед, отдых и свободное время на базе</div>
+        </li>
+        <li class="schedule-item">
+          <div class="schedule-head">
+            <span class="schedule-time">16:00</span>
+            <span class="schedule-name">Дневной практикум</span>
+          </div>
+          <div class="schedule-desc">Третья лекция или интерактивный мастер-класс</div>
+        </li>
+        <li class="schedule-item">
+          <div class="schedule-head">
+            <span class="schedule-time">19:30</span>
+            <span class="schedule-name">Вечерняя программа</span>
+          </div>
+          <div class="schedule-desc">Секретный формат от оргов — подробности раскроем ближе к выезду</div>
+        </li>
+        <li class="schedule-item">
+          <div class="schedule-head">
+            <span class="schedule-time">22:30</span>
+            <span class="schedule-name">Ночной движ</span>
+          </div>
+          <div class="schedule-desc">Музыка, свободное общение и закрытые ночные активности (отбой в 02:00 / 03:00)</div>
+        </li>
+      </ul>
+    </article>
+
+    <!-- Спикеры (заглушка до завершения отбора) -->
+    <article class="card card-info card-speakers">
+      <h2 class="card-title">СПИКЕРЫ</h2>
+
+      <div class="speakers-stage">
+        <div class="speakers-grid" aria-hidden="true">
+          <div class="speaker-slot">
+            <div class="speaker-avatar">
+              <svg viewBox="0 0 64 64">
+                <circle cx="32" cy="24" r="11" />
+                <ellipse cx="32" cy="60" rx="22" ry="18" />
+              </svg>
+            </div>
+            <div class="speaker-name">№;%:?*(#</div>
+            <div class="speaker-tag">::##//**::</div>
+          </div>
+
+          <div class="speaker-slot">
+            <div class="speaker-avatar">
+              <svg viewBox="0 0 64 64">
+                <circle cx="32" cy="24" r="11" />
+                <ellipse cx="32" cy="60" rx="22" ry="18" />
+              </svg>
+            </div>
+            <div class="speaker-name">@#$%&amp;*!?</div>
+            <div class="speaker-tag">--=??=--</div>
+          </div>
+
+          <div class="speaker-slot">
+            <div class="speaker-avatar">
+              <svg viewBox="0 0 64 64">
+                <circle cx="32" cy="24" r="11" />
+                <ellipse cx="32" cy="60" rx="22" ry="18" />
+              </svg>
+            </div>
+            <div class="speaker-name">?*№;%:@#</div>
+            <div class="speaker-tag">///_***_///</div>
+          </div>
+
+          <div class="speaker-slot">
+            <div class="speaker-avatar">
+              <svg viewBox="0 0 64 64">
+                <circle cx="32" cy="24" r="11" />
+                <ellipse cx="32" cy="60" rx="22" ry="18" />
+              </svg>
+            </div>
+            <div class="speaker-name">&amp;*!%№;$?</div>
+            <div class="speaker-tag">~#+=-:;~</div>
+          </div>
+
+          <div class="speaker-slot">
+            <div class="speaker-avatar">
+              <svg viewBox="0 0 64 64">
+                <circle cx="32" cy="24" r="11" />
+                <ellipse cx="32" cy="60" rx="22" ry="18" />
+              </svg>
+            </div>
+            <div class="speaker-name">#@?%*;№!</div>
+            <div class="speaker-tag">[:::??:::]</div>
+          </div>
+        </div>
+
+        <div class="speakers-overlay">
+          <div class="speakers-badge">
+            <span>Процесс отбора ещё идёт</span><span class="badge-cursor" aria-hidden="true">_</span>
+          </div>
+        </div>
+      </div>
+    </article>
+  </section>
+</main>
+
+<script src="js/config.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
