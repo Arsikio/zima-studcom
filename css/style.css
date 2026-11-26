@@ -639,3 +639,240 @@ body {
         padding: 18px 16px 16px;
     }
 }
+
+/* === WINTER FOOTER === */
+.winter-footer {
+    position: relative;
+    width: 100%;
+    margin-top: 72px;
+    padding-top: 115px;
+    overflow: hidden;
+}
+
+/* Тёмная подложка под свисающим краем снега и копирайтом */
+.footer-ground {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 44px;
+    background: #050e17;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Бесшовный пиксельный SVG-снег (высота совпадает с паттерном 160px) */
+.footer-snow-svg {
+    position: absolute;
+    left: 0;
+    bottom: 14px;
+    width: 100%;
+    height: 160px;
+    display: block;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* === Боковые спрайты поверх сугробов === */
+.footer-sprite {
+    position: absolute;
+    height: auto;
+    image-rendering: pixelated;
+    pointer-events: none;
+    user-select: none;
+    z-index: 2;
+}
+
+.footer-sprite--left {
+    bottom: 74px;
+    left: max(12px, calc(50% - 660px));
+    width: clamp(175px, 19vw, 270px);
+}
+
+.footer-sprite--right {
+    bottom: 52px;
+    right: max(12px, calc(50% - 660px));
+    width: clamp(190px, 21vw, 290px);
+}
+
+/* === Деревянные пиксельные таблички соцсетей === */
+.footer-signs {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: clamp(48px, 10vw, 180px);
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 20px 44px;
+}
+
+.snow-sign {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    filter: drop-shadow(0 5px 8px rgba(4, 14, 24, 0.45));
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+/* Верхушка столбика над табличкой */
+.snow-sign::before {
+    content: "";
+    display: block;
+    width: 12px;
+    height: 6px;
+    margin-bottom: -2px;
+    background: #2b4557;
+    border: 2px solid #0d1c27;
+    border-bottom: none;
+    box-shadow: inset 0 2px 0 #e8f7ff;
+}
+
+.snow-sign__board {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 15px 9px;
+    color: #e6f6ff;
+    font-family: monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    background: repeating-linear-gradient(
+            180deg,
+            #2d4a5c 0px,
+            #2d4a5c 10px,
+            #1f3645 10px,
+            #1f3645 12px
+    );
+    border: 2px solid #0d1c27;
+    box-shadow:
+            inset 0 4px 0 #e8f7ff,
+            inset 0 7px 0 #9ccbe6,
+            inset 0 -2px 0 #152733;
+    transition: filter 0.2s ease;
+}
+
+.snow-sign__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+    background: #d8f0fc;
+    color: #152b38;
+    border: 2px solid #0d1c27;
+}
+
+.snow-sign__text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+    text-shadow: 0 1px 0 #0d1c27;
+}
+
+.snow-sign__text small {
+    font-size: 10px;
+    font-weight: 500;
+    color: #a9d1e6;
+}
+
+/* Ножка столбика, воткнутая в снег */
+.snow-sign::after {
+    content: "";
+    display: block;
+    width: 12px;
+    height: 52px;
+    margin-top: -2px;
+    background: linear-gradient(90deg, #3c5d73 50%, #233b4a 50%);
+    border: 2px solid #0d1c27;
+    border-top: none;
+    box-shadow: 0 4px 0 #8ec1de;
+}
+
+.snow-sign:hover {
+    transform: translateY(-3px);
+    filter: drop-shadow(0 0 14px rgba(126, 232, 250, 0.55));
+}
+
+.snow-sign:hover .snow-sign__board {
+    filter: brightness(1.12);
+}
+
+/* === Копирайт внизу === */
+.footer-bottom {
+    position: relative;
+    z-index: 4;
+    text-align: center;
+    padding: 12px 16px 14px;
+}
+
+.footer-copy {
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: #8ab8d0;
+    text-transform: uppercase;
+}
+
+/* === Адаптация под мобильные экраны === */
+@media (max-width: 768px) {
+    .winter-footer {
+        margin-top: 48px;
+        padding-top: 24px;
+    }
+
+    .footer-ground {
+        height: 38px;
+    }
+
+    .footer-snow-svg {
+        bottom: 10px;
+    }
+
+    .footer-signs {
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+        padding-bottom: 148px;
+    }
+
+    .snow-sign {
+        width: 100%;
+        max-width: 270px;
+    }
+
+    .snow-sign__board {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 11px 14px 9px;
+        font-size: 12px;
+    }
+
+    .snow-sign::before,
+    .snow-sign::after {
+        display: none;
+    }
+
+    .footer-sprite--left {
+        width: 120px;
+        bottom: 72px;
+        left: -8px;
+    }
+
+    .footer-sprite--right {
+        width: 125px;
+        bottom: 56px;
+        right: -8px;
+    }
+
+    .footer-copy {
+        font-size: 10.5px;
+        letter-spacing: 0.12em;
+    }
+}
