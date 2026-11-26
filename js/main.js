@@ -551,4 +551,50 @@
   resize();
   updateCountdown(performance.now());
   requestAnimationFrame(animate);
+
+  window.addEventListener("resize", resize);
+  resize();
+  updateCountdown(performance.now());
+  requestAnimationFrame(animate);
+})();
+
+/* Гирлянда вокруг кнопки в футере */
+(function () {
+  var box = document.getElementById('garland');
+  if (!box) return;
+
+  var STEP = 30; // расстояние между лампочками, px
+
+  function addBulb(left, top, index) {
+    var b = document.createElement('span');
+    b.className = 'bulb c' + (index % 4);
+    b.style.left = left;
+    b.style.top = top;
+    b.style.animationDelay = '-' + ((index * 0.37) % 1.6).toFixed(2) + 's';
+    box.appendChild(b);
+  }
+
+  function build() {
+    box.querySelectorAll('.bulb').forEach(function (b) { b.remove(); });
+
+    var w = box.offsetWidth;
+    var h = box.offsetHeight;
+    var nx = Math.max(4, Math.round(w / STEP));
+    var ny = Math.max(2, Math.round(h / STEP));
+    var n = 0;
+    var i;
+
+    for (i = 0; i <= nx; i++) addBulb((i / nx * 100) + '%', '0%', n++);
+    for (i = 1; i < ny; i++) addBulb('100%', (i / ny * 100) + '%', n++);
+    for (i = nx; i >= 0; i--) addBulb((i / nx * 100) + '%', '100%', n++);
+    for (i = ny - 1; i > 0; i--) addBulb('0%', (i / ny * 100) + '%', n++);
+  }
+
+  build();
+
+  var t;
+  window.addEventListener('resize', function () {
+    clearTimeout(t);
+    t = setTimeout(build, 150);
+  });
 })();
