@@ -166,7 +166,8 @@ body {
     grid-template-columns: 1fr 1.5fr 1fr;
     grid-template-areas:
     "organizers about schedule"
-    "info info info";
+    "info info info"
+    "donate donate donate";
     gap: 20px;
     align-items: stretch;
 }
@@ -175,6 +176,7 @@ body {
 .card-about      { grid-area: about; }
 .card-schedule   { grid-area: schedule; }
 .card-info       { grid-area: info; }
+.card-donate     { grid-area: donate; }
 
 .card {
     display: flex;
@@ -449,6 +451,81 @@ body {
     50% { opacity: 0; }
 }
 
+/* ===== Поддержать выезд (донаты) ===== */
+.donate-body {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.donate-text {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.donate-label {
+    margin-bottom: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: #8be6ff;
+    text-shadow: 0 0 8px rgba(120, 228, 255, 0.35);
+}
+
+.donate-action {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding-left: 32px;
+    border-left: 1px dotted rgba(145, 228, 250, 0.3);
+}
+
+.donate-btn {
+    display: inline-block;
+    padding: 14px 28px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-decoration: none;
+    white-space: nowrap;
+    color: #e6fbff;
+    background: rgba(3, 13, 22, 0.84);
+    border: 1px dotted rgba(155, 234, 255, 0.68);
+    border-radius: 3px;
+    box-shadow: 0 0 18px rgba(112, 225, 255, 0.16);
+    text-shadow: 0 0 12px rgba(135, 230, 255, 0.55);
+    transition: border-color 0.2s ease, background 0.2s ease,
+                box-shadow 0.2s ease, color 0.2s ease;
+}
+
+.donate-btn:hover,
+.donate-btn:focus-visible {
+    color: #ffffff;
+    background: rgba(14, 42, 58, 0.72);
+    border-style: solid;
+    border-color: rgba(190, 245, 255, 0.9);
+    box-shadow:
+            inset 0 0 18px rgba(60, 170, 205, 0.22),
+            0 0 26px rgba(112, 225, 255, 0.38);
+}
+
+.donate-btn:focus-visible {
+    outline: 2px dashed #9ae9ff;
+    outline-offset: 6px;
+}
+
+.donate-btn:active {
+    background: rgba(24, 72, 92, 0.78);
+}
+
+.donate-hint {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: rgba(180, 232, 245, 0.55);
+}
+
 /* ===== Футер с кнопкой регистрации в гирлянде ===== */
 .site-footer {
     position: relative;
@@ -555,6 +632,8 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+    .badge-cursor { animation: none; }
+    .donate-btn { transition: none; }
     .bulb { animation: none; }
     .rect-btn { transition: none; }
 }
@@ -566,7 +645,8 @@ body {
         grid-template-areas:
       "about about"
       "organizers schedule"
-      "info info";
+      "info info"
+      "donate donate";
     }
 }
 
@@ -603,7 +683,8 @@ body {
       "about"
       "organizers"
       "schedule"
-      "info";
+      "info"
+      "donate";
         gap: 16px;
     }
 
@@ -629,6 +710,26 @@ body {
 
     .card {
         padding: 20px 18px 22px;
+    }
+
+    .donate-body {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 20px;
+    }
+
+    .donate-action {
+        padding-left: 0;
+        padding-top: 20px;
+        border-left: none;
+        border-top: 1px dotted rgba(145, 228, 250, 0.3);
+    }
+
+    .donate-btn {
+        width: 100%;
+        text-align: center;
+        padding: 14px 16px;
+        font-size: 14px;
     }
 
     .garland {
