@@ -1,0 +1,979 @@
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    overflow-x: hidden;
+    overflow-y: auto;
+    background: #02070c;
+    color: #e5fbff;
+    font-family: "Courier New", Consolas, monospace;
+    scrollbar-color: rgba(123, 220, 243, 0.35) #02070c;
+    scrollbar-width: thin;
+}
+
+/* Закреплённый фон со снегом */
+#snowCanvas {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.vignette {
+    position: fixed;
+    z-index: 1;
+    inset: 0;
+    pointer-events: none;
+    background:
+            radial-gradient(ellipse at center, transparent 38%, rgba(0, 3, 8, 0.5) 100%),
+            linear-gradient(180deg, rgba(0, 0, 0, 0.08), transparent 30%, rgba(0, 0, 0, 0.32));
+}
+
+/* Первый экран — точно на всю высоту окна */
+.hero {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 100vh;
+    height: 100svh;
+    min-height: 460px;
+}
+
+#logoCanvas {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.hero-header {
+    position: absolute;
+    z-index: 3;
+    left: 50%;
+    bottom: clamp(24px, 6vh, 64px);
+    width: min(90vw, 720px);
+    transform: translateX(-50%);
+    text-align: center;
+    pointer-events: none;
+    text-shadow: 0 0 18px rgba(112, 225, 255, 0.42);
+}
+
+.eyebrow {
+    margin-bottom: 11px;
+    color: rgba(180, 235, 247, 0.62);
+    font: 600 10px/1.4 "Courier New", Consolas, monospace;
+    letter-spacing: 0.34em;
+    padding-left: 0.34em;
+}
+
+.hero-header h1 {
+    margin: 0;
+    color: #e6fbff;
+    font: 700 clamp(40px, 8vw, 80px)/1 "Courier New", Consolas, monospace;
+    letter-spacing: 0.1em;
+    padding-left: 0.1em;
+}
+
+/* Основной поток контента под первым экраном */
+.page {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: clamp(18px, 4vh, 42px) clamp(14px, 3vw, 28px) clamp(56px, 9vh, 100px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(32px, 5.5vh, 54px);
+}
+
+/* ASCII-таймер обратного отсчёта */
+.countdown {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+    width: 100%;
+}
+
+.time-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 148px;
+    padding: 16px 18px 13px;
+    background: rgba(4, 15, 24, 0.68);
+    border: 1px solid rgba(135, 225, 248, 0.28);
+    border-radius: 6px;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 0 22px rgba(24, 118, 150, 0.14);
+}
+
+.digits-pair {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+
+.ascii-digit {
+    margin: 0;
+    white-space: pre;
+    font-family: "Courier New", Consolas, monospace;
+    font-size: 10px;
+    line-height: 9px;
+    font-weight: 700;
+    color: #ccf7ff;
+    text-shadow:
+            0 0 6px rgba(150, 242, 255, 0.65),
+            0 0 14px rgba(70, 200, 255, 0.3);
+    transition: color 0.12s ease, text-shadow 0.12s ease, transform 0.12s ease;
+}
+
+.ascii-digit.glitching {
+    color: #ffffff;
+    text-shadow:
+            0 0 8px #ffffff,
+            0 0 18px #3eeeff;
+    transform: translateY(-1px);
+}
+
+.time-label {
+    margin-top: 10px;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: lowercase;
+    color: rgba(180, 232, 245, 0.68);
+}
+
+/* Сетка информационных блоков: 3 равных по высоте сверху + 1 широкий снизу */
+.info-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1fr;
+    grid-template-areas:
+    "organizers about schedule"
+    "info info info"
+    "donate donate donate";
+    gap: 20px;
+    align-items: stretch;
+}
+
+.card-organizers { grid-area: organizers; }
+.card-about      { grid-area: about; }
+.card-schedule   { grid-area: schedule; }
+.card-info       { grid-area: info; }
+.card-donate     { grid-area: donate; }
+
+.card {
+    display: flex;
+    flex-direction: column;
+    padding: 24px 24px 26px;
+    background: rgba(4, 15, 24, 0.72);
+    border: 1px dotted rgba(145, 228, 250, 0.45);
+    border-radius: 3px;
+    backdrop-filter: blur(6px);
+    box-shadow:
+            inset 0 0 28px rgba(24, 96, 124, 0.12),
+            0 12px 30px rgba(0, 4, 10, 0.45);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+    border-color: rgba(175, 240, 255, 0.72);
+    box-shadow:
+            inset 0 0 32px rgba(40, 145, 180, 0.18),
+            0 12px 34px rgba(0, 10, 20, 0.55);
+}
+
+.card-title {
+    margin: 0 0 20px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: #9ae9ff;
+    text-shadow: 0 0 12px rgba(120, 228, 255, 0.45);
+}
+
+/* О мероприятии */
+.card-text {
+    margin: 0 0 14px;
+    font-size: 14px;
+    line-height: 1.72;
+    color: rgba(226, 248, 255, 0.88);
+}
+
+.card-text:last-child {
+    margin-bottom: 0;
+}
+
+/* Организаторы */
+.org-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.org-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.org-avatar {
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #bceeff;
+    background: rgba(24, 72, 92, 0.45);
+    border: 1px solid rgba(145, 228, 250, 0.4);
+    box-shadow: 0 0 12px rgba(100, 215, 245, 0.16);
+}
+
+.org-meta {
+    min-width: 0;
+}
+
+.org-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ecfbff;
+}
+
+.org-role {
+    margin-top: 2px;
+    font-size: 12px;
+    color: rgba(185, 225, 238, 0.68);
+}
+
+.org-link {
+    display: inline-block;
+    margin-top: 3px;
+    font-size: 12px;
+    color: #82e0fa;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s ease;
+}
+
+.org-link:hover {
+    color: #ffffff;
+}
+
+.card-organizers .org-list {
+    margin-bottom: 22px;
+}
+
+.org-note {
+    margin: auto 0;
+    padding: 15px 16px;
+    background: rgba(14, 42, 58, 0.34);
+    border: 1px dotted rgba(145, 228, 250, 0.3);
+    border-left: 2px solid rgba(139, 230, 255, 0.72);
+    border-radius: 3px;
+}
+
+.org-note-label {
+    margin-bottom: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: #8be6ff;
+    text-shadow: 0 0 8px rgba(120, 228, 255, 0.35);
+}
+
+.org-note p {
+    margin: 0;
+    font-size: 12.5px;
+    line-height: 1.62;
+    color: rgba(214, 242, 252, 0.8);
+}
+
+/* Расписание дня */
+.schedule-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.schedule-head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.schedule-time {
+    font-size: 14px;
+    font-weight: 700;
+    color: #8be6ff;
+    text-shadow: 0 0 8px rgba(120, 228, 255, 0.35);
+}
+
+.schedule-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ecfbff;
+}
+
+.schedule-desc {
+    margin-top: 3px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: rgba(185, 225, 238, 0.66);
+}
+
+/* Спикеры — замыленный ряд силуэтов + плашка поверх */
+.speakers-stage {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 3px;
+}
+
+.speakers-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 20px;
+    padding: 12px 8px 10px;
+    filter: blur(4.2px);
+    opacity: 0.62;
+    user-select: none;
+    pointer-events: none;
+}
+
+.speaker-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.speaker-avatar {
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: rgba(16, 48, 64, 0.72);
+    border: 1px solid rgba(145, 228, 250, 0.42);
+    box-shadow: 0 0 18px rgba(100, 215, 245, 0.18);
+    margin-bottom: 12px;
+}
+
+.speaker-avatar svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    fill: rgba(188, 238, 255, 0.78);
+}
+
+.speaker-name {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: #e6fbff;
+}
+
+.speaker-tag {
+    margin-top: 5px;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: rgba(139, 230, 255, 0.72);
+}
+
+/* Чёткая надпись поверх размытия */
+.speakers-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: radial-gradient(
+            ellipse at center,
+            rgba(2, 10, 17, 0.45) 0%,
+            rgba(2, 10, 17, 0.12) 100%
+    );
+}
+
+.speakers-badge {
+    padding: 13px 26px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #e6fbff;
+    background: rgba(3, 13, 22, 0.84);
+    border: 1px dotted rgba(155, 234, 255, 0.68);
+    border-radius: 3px;
+    box-shadow:
+            0 0 26px rgba(0, 5, 12, 0.85),
+            0 0 18px rgba(112, 225, 255, 0.22);
+    text-shadow: 0 0 12px rgba(135, 230, 255, 0.55);
+}
+
+.badge-cursor {
+    display: inline-block;
+    margin-left: 3px;
+    color: #9ae9ff;
+    animation: cursorBlink 1s steps(2, start) infinite;
+}
+
+@keyframes cursorBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* ===== Поддержать выезд (донаты) ===== */
+.donate-body {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.donate-text {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.donate-label {
+    margin-bottom: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: #8be6ff;
+    text-shadow: 0 0 8px rgba(120, 228, 255, 0.35);
+}
+
+.donate-action {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding-left: 32px;
+    border-left: 1px dotted rgba(145, 228, 250, 0.3);
+}
+
+.donate-btn {
+    display: inline-block;
+    padding: 14px 28px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-decoration: none;
+    white-space: nowrap;
+    color: #e6fbff;
+    background: rgba(3, 13, 22, 0.84);
+    border: 1px dotted rgba(155, 234, 255, 0.68);
+    border-radius: 3px;
+    box-shadow: 0 0 18px rgba(112, 225, 255, 0.16);
+    text-shadow: 0 0 12px rgba(135, 230, 255, 0.55);
+    transition: border-color 0.2s ease, background 0.2s ease,
+                box-shadow 0.2s ease, color 0.2s ease;
+}
+
+.donate-btn:hover,
+.donate-btn:focus-visible {
+    color: #ffffff;
+    background: rgba(14, 42, 58, 0.72);
+    border-style: solid;
+    border-color: rgba(190, 245, 255, 0.9);
+    box-shadow:
+            inset 0 0 18px rgba(60, 170, 205, 0.22),
+            0 0 26px rgba(112, 225, 255, 0.38);
+}
+
+.donate-btn:focus-visible {
+    outline: 2px dashed #9ae9ff;
+    outline-offset: 6px;
+}
+
+.donate-btn:active {
+    background: rgba(24, 72, 92, 0.78);
+}
+
+.donate-hint {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: rgba(180, 232, 245, 0.55);
+}
+
+/* ===== Футер с кнопкой регистрации в гирлянде ===== */
+.site-footer {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    padding: clamp(40px, 7vh, 64px) 20px clamp(36px, 6vh, 56px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+    border-top: 1px dotted rgba(145, 228, 250, 0.3);
+    background: linear-gradient(0deg, rgba(2, 7, 12, 0.85), rgba(2, 7, 12, 0));
+}
+
+.footer-note {
+    margin: 0;
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    color: rgba(180, 232, 245, 0.55);
+}
+
+/* Гирлянда: провод вокруг кнопки + лампочки (их создаёт скрипт) */
+.garland {
+    position: relative;
+    width: min(560px, 100%);
+    padding: 30px clamp(22px, 6vw, 44px);
+    border: 2px solid #2f8f5b;
+    box-shadow: 0 0 14px rgba(47, 143, 91, 0.25);
+}
+
+.bulb {
+    position: absolute;
+    width: 9px;
+    height: 9px;
+    transform: translate(-50%, -50%);
+    background: var(--c);
+    box-shadow: 0 0 6px var(--c), 0 0 14px var(--c);
+    animation: bulbTwinkle 1.6s steps(2, end) infinite;
+}
+
+.bulb.c0 { --c: #ff4d5a; }
+.bulb.c1 { --c: #ffd24a; }
+.bulb.c2 { --c: #5dff9a; }
+.bulb.c3 { --c: #5cc8ff; }
+
+@keyframes bulbTwinkle {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.3; }
+}
+
+/* Кнопка — простой прямоугольник */
+.rect-btn {
+    display: block;
+    padding: 22px 30px 20px;
+    background: #c8e6ef;
+    box-shadow: 0 6px 0 #3b6579;
+    text-align: center;
+    text-decoration: none;
+    color: #0a2233;
+    transition: transform 0.08s steps(2), background 0.12s ease, box-shadow 0.08s steps(2);
+}
+
+.rect-btn:hover,
+.rect-btn:focus-visible {
+    background: #e1f6fb;
+    transform: translateY(-3px);
+    box-shadow: 0 9px 0 #3b6579;
+}
+
+.rect-btn:active {
+    transform: translateY(5px);
+    box-shadow: 0 1px 0 #3b6579;
+}
+
+.rect-btn:focus-visible {
+    outline: 3px dashed #9ae9ff;
+    outline-offset: 8px;
+}
+
+.rect-btn-title {
+    display: block;
+    font-family: "Courier New", Consolas, monospace;
+    font-size: clamp(20px, 4.6vw, 28px);
+    font-weight: 900;
+    line-height: 1.2;
+    letter-spacing: 0.06em;
+    text-align: center;
+    color: #0a2233;
+    -webkit-text-stroke: 1.4px #0a2233;
+    paint-order: stroke fill;
+}
+
+.rect-btn-sub {
+    display: block;
+    margin-top: 10px;
+    font-family: "Courier New", Consolas, monospace;
+    font-size: 11px;
+    font-weight: 900;
+    line-height: 1.3;
+    letter-spacing: 0.1em;
+    text-align: center;
+    color: #35687d;
+    -webkit-text-stroke: 0.5px #35687d;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .badge-cursor { animation: none; }
+    .donate-btn { transition: none; }
+    .bulb { animation: none; }
+    .rect-btn { transition: none; }
+}
+
+/* Планшеты */
+@media (max-width: 960px) {
+    .info-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+      "about about"
+      "organizers schedule"
+      "info info"
+      "donate donate";
+    }
+}
+
+/* Телефоны */
+@media (max-width: 640px) {
+    .hero-header {
+        bottom: 4vh;
+    }
+
+    .countdown {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        max-width: 340px;
+        gap: 10px;
+    }
+
+    .time-card {
+        min-width: 0;
+        padding: 13px 10px 10px;
+    }
+
+    .ascii-digit {
+        font-size: 8px;
+        line-height: 7.4px;
+    }
+
+    .digits-pair {
+        gap: 5px;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+      "about"
+      "organizers"
+      "schedule"
+      "info"
+      "donate";
+        gap: 16px;
+    }
+
+    .speakers-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .speaker-slot:nth-child(5) {
+        display: none;
+    }
+
+    .speaker-avatar {
+        width: 64px;
+        height: 64px;
+    }
+
+    .speakers-badge {
+        font-size: 12.5px;
+        padding: 11px 16px;
+        letter-spacing: 0.1em;
+    }
+
+    .card {
+        padding: 20px 18px 22px;
+    }
+
+    .donate-body {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 20px;
+    }
+
+    .donate-action {
+        padding-left: 0;
+        padding-top: 20px;
+        border-left: none;
+        border-top: 1px dotted rgba(145, 228, 250, 0.3);
+    }
+
+    .donate-btn {
+        width: 100%;
+        text-align: center;
+        padding: 14px 16px;
+        font-size: 14px;
+    }
+
+    .garland {
+        padding: 26px 20px;
+    }
+
+    .rect-btn {
+        padding: 18px 16px 16px;
+    }
+}
+
+/* === WINTER FOOTER === */
+.winter-footer {
+    position: relative;
+    width: 100%;
+    margin-top: 72px;
+    padding-top: 115px;
+    overflow: hidden;
+}
+
+/* Тёмная подложка под свисающим краем снега и копирайтом */
+.footer-ground {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 44px;
+    background: #050e17;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Бесшовный пиксельный SVG-снег (высота совпадает с паттерном 160px) */
+.footer-snow-svg {
+    position: absolute;
+    left: 0;
+    bottom: 14px;
+    width: 100%;
+    height: 160px;
+    display: block;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* === Боковые спрайты поверх сугробов === */
+.footer-sprite {
+    position: absolute;
+    height: auto;
+    image-rendering: pixelated;
+    pointer-events: none;
+    user-select: none;
+    z-index: 2;
+}
+
+.footer-sprite--left {
+    bottom: 74px;
+    left: max(12px, calc(50% - 660px));
+    width: clamp(175px, 19vw, 270px);
+}
+
+.footer-sprite--right {
+    bottom: 52px;
+    right: max(12px, calc(50% - 660px));
+    width: clamp(190px, 21vw, 290px);
+}
+
+/* === Деревянные пиксельные таблички соцсетей === */
+.footer-signs {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: clamp(48px, 10vw, 180px);
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 20px 44px;
+}
+
+.snow-sign {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    filter: drop-shadow(0 5px 8px rgba(4, 14, 24, 0.45));
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+/* Верхушка столбика над табличкой */
+.snow-sign::before {
+    content: "";
+    display: block;
+    width: 12px;
+    height: 6px;
+    margin-bottom: -2px;
+    background: #2b4557;
+    border: 2px solid #0d1c27;
+    border-bottom: none;
+    box-shadow: inset 0 2px 0 #e8f7ff;
+}
+
+.snow-sign__board {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 15px 9px;
+    color: #e6f6ff;
+    font-family: monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    background: repeating-linear-gradient(
+            180deg,
+            #2d4a5c 0px,
+            #2d4a5c 10px,
+            #1f3645 10px,
+            #1f3645 12px
+    );
+    border: 2px solid #0d1c27;
+    box-shadow:
+            inset 0 4px 0 #e8f7ff,
+            inset 0 7px 0 #9ccbe6,
+            inset 0 -2px 0 #152733;
+    transition: filter 0.2s ease;
+}
+
+.snow-sign__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+    background: #d8f0fc;
+    color: #152b38;
+    border: 2px solid #0d1c27;
+}
+
+.snow-sign__text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+    text-shadow: 0 1px 0 #0d1c27;
+}
+
+.snow-sign__text small {
+    font-size: 10px;
+    font-weight: 500;
+    color: #a9d1e6;
+}
+
+/* Ножка столбика, воткнутая в снег */
+.snow-sign::after {
+    content: "";
+    display: block;
+    width: 12px;
+    height: 52px;
+    margin-top: -2px;
+    background: linear-gradient(90deg, #3c5d73 50%, #233b4a 50%);
+    border: 2px solid #0d1c27;
+    border-top: none;
+    box-shadow: 0 4px 0 #8ec1de;
+}
+
+.snow-sign:hover {
+    transform: translateY(-3px);
+    filter: drop-shadow(0 0 14px rgba(126, 232, 250, 0.55));
+}
+
+.snow-sign:hover .snow-sign__board {
+    filter: brightness(1.12);
+}
+
+/* === Копирайт внизу === */
+.footer-bottom {
+    position: relative;
+    z-index: 4;
+    text-align: center;
+    padding: 12px 16px 14px;
+}
+
+.footer-copy {
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: #8ab8d0;
+    text-transform: uppercase;
+}
+
+/* === Адаптация под мобильные экраны === */
+@media (max-width: 768px) {
+    .winter-footer {
+        margin-top: 48px;
+        padding-top: 24px;
+    }
+
+    .footer-ground {
+        height: 38px;
+    }
+
+    .footer-snow-svg {
+        bottom: 10px;
+    }
+
+    .footer-signs {
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+        padding-bottom: 148px;
+    }
+
+    .snow-sign {
+        width: 100%;
+        max-width: 270px;
+    }
+
+    .snow-sign__board {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 11px 14px 9px;
+        font-size: 12px;
+    }
+
+    .snow-sign::before,
+    .snow-sign::after {
+        display: none;
+    }
+
+    .footer-sprite--left {
+        width: 120px;
+        bottom: 72px;
+        left: -8px;
+    }
+
+    .footer-sprite--right {
+        width: 125px;
+        bottom: 56px;
+        right: -8px;
+    }
+
+    .footer-copy {
+        font-size: 10.5px;
+        letter-spacing: 0.12em;
+    }
+}
