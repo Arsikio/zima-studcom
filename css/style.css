@@ -452,10 +452,46 @@ body {
 }
 
 /* ===== Поддержать выезд (донаты) ===== */
-.donate-body {
+.card-donate {
+    display: grid;
+    grid-template-columns: 135px minmax(0, 1fr); /* Уменьшили ширину под монетки, чтобы текст стал свободнее */
+    grid-template-rows: auto auto;
+    grid-template-areas:
+        "title title" /* Теперь заголовок растянут на всю ширину и встанет ровно по центру */
+        "media body";
+    column-gap: 28px;
+    row-gap: 16px; /* Добавили отступ между заголовком и контентом */
+    align-items: center;
+}
+
+.card-donate .card-title {
+    grid-area: title;
+    margin-bottom: 4px; /* Уменьшили отступ снизу, так как теперь есть row-gap */
+}
+
+.donate-media {
+    grid-area: media;
     display: flex;
     align-items: center;
-    gap: 32px;
+    justify-content: center;
+}
+
+.donate-coins {
+    width: 100%;
+    max-width: 135px; /* Сделали монетки компактнее и аккуратнее */
+    height: auto;
+    display: block;
+    mix-blend-mode: screen;
+    filter: contrast(1.08);
+    pointer-events: none;
+    user-select: none;
+}
+
+.donate-body {
+    grid-area: body;
+    display: flex;
+    align-items: center;
+    gap: 28px;
 }
 
 .donate-text {
@@ -478,7 +514,7 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 10px;
-    padding-left: 32px;
+    padding-left: 28px;
     border-left: 1px dotted rgba(145, 228, 250, 0.3);
 }
 
@@ -497,7 +533,7 @@ body {
     box-shadow: 0 0 18px rgba(112, 225, 255, 0.16);
     text-shadow: 0 0 12px rgba(135, 230, 255, 0.55);
     transition: border-color 0.2s ease, background 0.2s ease,
-                box-shadow 0.2s ease, color 0.2s ease;
+    box-shadow 0.2s ease, color 0.2s ease;
 }
 
 .donate-btn:hover,
@@ -648,6 +684,15 @@ body {
       "info info"
       "donate donate";
     }
+
+    .card-donate {
+        grid-template-columns: 110px minmax(0, 1fr);
+        column-gap: 20px;
+    }
+
+    .donate-coins {
+        max-width: 110px;
+    }
 }
 
 /* Телефоны */
@@ -712,10 +757,41 @@ body {
         padding: 20px 18px 22px;
     }
 
+    .card-donate {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "title"
+            "media"
+            "body";
+        row-gap: 16px;
+    }
+
+    .card-donate .card-title {
+        margin-bottom: 0;
+    }
+
+    .donate-coins {
+        max-width: 145px;
+    }
+
     .donate-body {
         flex-direction: column;
         align-items: stretch;
         gap: 20px;
+    }
+
+    .donate-action {
+        padding-left: 0;
+        padding-top: 20px;
+        border-left: none;
+        border-top: 1px dotted rgba(145, 228, 250, 0.3);
+    }
+
+    .donate-btn {
+        width: 100%;
+        text-align: center;
+        padding: 14px 16px;
+        font-size: 14px;
     }
 
     .donate-action {
