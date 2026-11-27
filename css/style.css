@@ -92,7 +92,7 @@ body {
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: clamp(18px, 4vh, 42px) clamp(14px, 3vw, 28px) clamp(56px, 9vh, 100px);
+    padding: clamp(18px, 4vh, 42px) clamp(14px, 3vw, 28px) 16px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -519,32 +519,115 @@ body {
 }
 
 .donate-btn {
-    display: inline-block;
-    padding: 14px 28px;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 230px;
+    padding: 18px 34px;
+    color: #dffaff;
+    background: linear-gradient(
+            115deg,
+            #071b2c 0%,
+            #12425a 50%,
+            #071b2c 100%
+    );
+    border: 1px solid rgba(115, 228, 255, 0.8);
+    border-radius: 4px;
+    font-family: "Courier New", Consolas, monospace;
     font-size: 15px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
+    font-weight: 900;
+    letter-spacing: 0.13em;
     text-decoration: none;
     white-space: nowrap;
-    color: #e6fbff;
-    background: rgba(3, 13, 22, 0.84);
-    border: 1px dotted rgba(155, 234, 255, 0.68);
-    border-radius: 3px;
-    box-shadow: 0 0 18px rgba(112, 225, 255, 0.16);
-    text-shadow: 0 0 12px rgba(135, 230, 255, 0.55);
-    transition: border-color 0.2s ease, background 0.2s ease,
-    box-shadow 0.2s ease, color 0.2s ease;
+    box-shadow:
+            0 0 16px rgba(72, 205, 255, 0.25),
+            inset 0 0 16px rgba(72, 205, 255, 0.18);
+    text-shadow: 0 0 10px rgba(99, 223, 255, 0.75);
+    transition: transform 0.25s ease, box-shadow 0.28s ease,
+    border-color 0.25s ease, color 0.25s ease;
+}
+
+/* Яркая голубая заливка при наведении (плавно проявляется через opacity) */
+.donate-btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: linear-gradient(
+            115deg,
+            rgba(32, 138, 178, 0.85) 0%,
+            rgba(86, 214, 248, 0.9) 50%,
+            rgba(32, 138, 178, 0.85) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.28s ease;
+    pointer-events: none;
+}
+
+/* Диагональный блик, который сам пробегает по кнопке раз в 4 секунды */
+.donate-btn::before {
+    content: "";
+    position: absolute;
+    top: -30%;
+    left: -80%;
+    width: 55%;
+    height: 160%;
+    z-index: 2;
+    background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(170, 245, 255, 0.22) 30%,
+            rgba(240, 254, 255, 0.75) 50%,
+            rgba(170, 245, 255, 0.22) 70%,
+            transparent 100%
+    );
+    transform: skewX(-25deg);
+    animation: donateShine 4s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.donate-btn__text {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.donate-snowflake {
+    display: inline-flex;
+    align-items: center;
+    font-size: 16px;
+    line-height: 1;
+    filter: drop-shadow(0 0 8px rgba(99, 223, 255, 0.85));
+    animation: donateHeartPulse 2.6s ease-in-out infinite;
+    transition: transform 0.25s ease, filter 0.25s ease;
 }
 
 .donate-btn:hover,
 .donate-btn:focus-visible {
     color: #ffffff;
-    background: rgba(14, 42, 58, 0.72);
-    border-style: solid;
-    border-color: rgba(190, 245, 255, 0.9);
+    border-color: rgba(210, 250, 255, 0.98);
+    transform: translateY(-2px);
     box-shadow:
-            inset 0 0 18px rgba(60, 170, 205, 0.22),
-            0 0 26px rgba(112, 225, 255, 0.38);
+            0 0 18px rgba(105, 232, 255, 0.65),
+            0 0 40px rgba(56, 200, 255, 0.42),
+            inset 0 0 22px rgba(190, 248, 255, 0.4);
+    text-shadow: 0 0 14px rgba(255, 255, 255, 0.95);
+}
+
+.donate-btn:hover::after,
+.donate-btn:focus-visible::after {
+    opacity: 1;
+}
+
+.donate-btn:hover .donate-snowflake {
+    transform: scale(1.16);
+    filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.95));
 }
 
 .donate-btn:focus-visible {
@@ -553,7 +636,37 @@ body {
 }
 
 .donate-btn:active {
-    background: rgba(24, 72, 92, 0.78);
+    transform: translateY(1px);
+    box-shadow:
+            0 0 14px rgba(105, 232, 255, 0.55),
+            inset 0 0 18px rgba(190, 248, 255, 0.35);
+}
+
+@keyframes donateShine {
+    0%, 78% {
+        left: -80%;
+    }
+    100% {
+        left: 135%;
+    }
+}
+
+@keyframes donateHeartPulse {
+    0%, 100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 7px rgba(99, 223, 255, 0.8));
+    }
+    50% {
+        transform: scale(1.08);
+        filter: drop-shadow(0 0 13px rgba(175, 245, 255, 1));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .donate-btn::before,
+    .donate-snowflake {
+        animation: none;
+    }
 }
 
 .donate-hint {
@@ -787,13 +900,6 @@ body {
         border-top: 1px dotted rgba(145, 228, 250, 0.3);
     }
 
-    .donate-btn {
-        width: 100%;
-        text-align: center;
-        padding: 14px 16px;
-        font-size: 14px;
-    }
-
     .donate-action {
         padding-left: 0;
         padding-top: 20px;
@@ -802,9 +908,9 @@ body {
     }
 
     .donate-btn {
+        min-width: 0;
         width: 100%;
-        text-align: center;
-        padding: 14px 16px;
+        padding: 15px 16px;
         font-size: 14px;
     }
 
@@ -817,12 +923,186 @@ body {
     }
 }
 
+/* ===== Главная кнопка регистрации (пиксельный баннер) ===== */
+.reg-cta {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: clamp(10px, 2vh, 20px) 0 0;
+}
+
+.reg-banner-btn {
+    position: relative;
+    display: block;
+    width: 100%;
+    max-width: 780px; /* Крупная, заметная кнопка по центру */
+    container-type: inline-size;
+    text-decoration: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), filter 0.25s ease;
+    animation: regPulse 3.2s ease-in-out infinite;
+}
+
+/* Мягкая подложка-свечение позади баннера, чтобы выделялся на тёмном фоне */
+.reg-banner-btn::before {
+    content: "";
+    position: absolute;
+    inset: 14% 6%;
+    border-radius: 999px;
+    background: radial-gradient(ellipse at center, rgba(72, 212, 255, 0.28) 0%, transparent 72%);
+    filter: blur(22px);
+    z-index: -1;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.reg-banner-btn__bg {
+    display: block;
+    width: 100%;
+    height: auto;
+    pointer-events: none;
+    user-select: none;
+}
+
+/* Область текста ровно внутри тёмной рамки (с учётом пряника и кружки слева) */
+.reg-banner-btn__content {
+    position: absolute;
+    top: 34%;
+    bottom: 26%;
+    left: 28%;
+    right: 16%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.9cqw;
+    text-align: center;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+/* Периодический ледяной блик по тёмной табличке */
+.reg-banner-btn__content::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -75%;
+    width: 45%;
+    height: 100%;
+    background: linear-gradient(
+            105deg,
+            transparent 0%,
+            rgba(175, 244, 255, 0.22) 50%,
+            transparent 100%
+    );
+    transform: skewX(-20deg);
+    animation: regShine 4.2s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.reg-banner-btn__title {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.1cqw;
+    font-size: clamp(13px, 4.1cqw, 32px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: 0.08em;
+    color: #f0fdff;
+    white-space: nowrap;
+    text-shadow:
+            0 0 10px rgba(130, 232, 255, 0.85),
+            0 0 22px rgba(56, 189, 248, 0.55);
+    transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.reg-banner-btn__arrow {
+    display: inline-block;
+    transition: transform 0.22s ease;
+}
+
+.reg-banner-btn__sub {
+    font-size: clamp(8px, 1.95cqw, 15px);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.12em;
+    color: #7ee3ff;
+    white-space: nowrap;
+    text-shadow: 0 0 8px rgba(103, 232, 249, 0.45);
+}
+
+/* Эффект при наведении: подъём, яркое свечение, выезд стрелки */
+.reg-banner-btn:hover,
+.reg-banner-btn:focus-visible {
+    animation-play-state: paused;
+    transform: translateY(-4px) scale(1.025);
+    filter: drop-shadow(0 0 24px rgba(112, 230, 255, 0.65));
+}
+
+.reg-banner-btn:hover::before,
+.reg-banner-btn:focus-visible::before {
+    opacity: 1;
+    transform: scale(1.08);
+}
+
+.reg-banner-btn:hover .reg-banner-btn__title {
+    color: #ffffff;
+    text-shadow:
+            0 0 14px rgba(255, 255, 255, 0.9),
+            0 0 28px rgba(72, 212, 255, 0.85);
+}
+
+.reg-banner-btn:hover .reg-banner-btn__arrow {
+    transform: translateX(6px);
+}
+
+/* Тактильный клик */
+.reg-banner-btn:active {
+    transform: translateY(2px) scale(0.985);
+    filter: drop-shadow(0 0 14px rgba(112, 230, 255, 0.85));
+}
+
+.reg-banner-btn:focus-visible {
+    outline: 2px dashed #9ae9ff;
+    outline-offset: 8px;
+    border-radius: 16px;
+}
+
+@keyframes regPulse {
+    0%, 100% {
+        filter: drop-shadow(0 6px 16px rgba(56, 189, 248, 0.28));
+    }
+    50% {
+        filter: drop-shadow(0 6px 26px rgba(112, 230, 255, 0.55));
+    }
+}
+
+@keyframes regShine {
+    0%, 62% {
+        left: -75%;
+    }
+    100% {
+        left: 135%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reg-banner-btn,
+    .reg-banner-btn__content::after {
+        animation: none;
+    }
+    .reg-banner-btn,
+    .reg-banner-btn__arrow {
+        transition: none;
+    }
+}
+
 /* === WINTER FOOTER === */
 .winter-footer {
     position: relative;
     width: 100%;
-    margin-top: 72px;
-    padding-top: 115px;
+    margin-top: 0;      /* было 72px */
+    padding-top: 95px;  /* было 115px — макушка ёлки всё ещё помещается целиком */
     overflow: hidden;
 }
 
@@ -1000,8 +1280,8 @@ body {
 /* === Адаптация под мобильные экраны === */
 @media (max-width: 768px) {
     .winter-footer {
-        margin-top: 48px;
-        padding-top: 24px;
+        margin-top: 12px; /* было 48px */
+        padding-top: 16px;
     }
 
     .footer-ground {
